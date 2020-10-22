@@ -1,4 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Heading from './components/Heading3';
+import ButtonRefresh from './components/ButtonRefresh';
+import ButtonSend from './components/ButtonSend';
+import Message from './components/Message';
+import InputField from './components/InputField';
 
 function App() {
 	const [chatRoomData, setChatRoomData] = useState(null);
@@ -42,43 +47,23 @@ function App() {
 		<div className='container'>
 			<div className='row'>
 				<div className='col-md-12'>
-					<div className='form-group'>
-						<label>Your message</label>
-						<input
-							ref={messageInputRef}
-							className='form-control'
-							placeholder='hello..'
-						></input>
-            	<input
-							ref={nameInputRef}
-							className='form-control'
-							placeholder='name..'
-						></input>
-					</div>
-					<button onClick={handleSendMessage} className='btn btn-primary'>
-						Send message
-					</button>
+            <InputField label='Enter your message' myRef={messageInputRef}  placeholder='Hello...'/>
+            <InputField label='Enter your name' myRef={nameInputRef}  placeholder='John Doe'/>
+            <ButtonSend handleSendMessage={handleSendMessage}/>
 				</div>
 			</div>
 			<div>
-				<button className='btn btn-secondary'>Refresh</button>
+        <ButtonRefresh handleOnClick={fetchChatRoomData}/>
 			</div>
 			<div className='row mt-5'>
-				<div className='col-md-12'>
-					<h3>{chatRoomData && chatRoomData.name}</h3>
-					{console.log(chatRoomData)};
-				</div>
+      {chatRoomData && <Heading heading={chatRoomData.name} />}
 
 				{chatRoomData &&
 					Object.entries(chatRoomData.messages)
 						.reverse()
 						.map((messageItem, index) => {
 							return (
-								<div key={index} className='col-md-12'>
-									<div className='alert alert-info'>
-										{messageItem[1].message} - {messageItem[1].name}
-									</div>
-								</div>
+                <Message key={index} message={messageItem[1].message} name={messageItem[1].name}/>
 							);
 						})}
 			</div>
