@@ -4,11 +4,13 @@ function App() {
 	const [chatRoomData, setChatRoomData] = useState(null);
 
 	const chatRoomURL =
-    'https://mock-data-api.firebaseio.com/chatrooms/MF_cHwY2pj8e8zwu8eO.json';
-  
-  const messageURL = 'https://mock-data-api.firebaseio.com/chatrooms/MF_cHwY2pj8e8zwu8eO/messages.json'
-    
-  const messageInputRef = useRef()
+		'https://mock-data-api.firebaseio.com/chatrooms/MF_cHwY2pj8e8zwu8eO.json';
+
+	const messageURL =
+		'https://mock-data-api.firebaseio.com/chatrooms/MF_cHwY2pj8e8zwu8eO/messages.json';
+
+	const messageInputRef = useRef();
+	const nameInputRef = useRef();
 
 	const fetchChatRoomData = () => {
 		fetch(chatRoomURL)
@@ -17,20 +19,20 @@ function App() {
 				setChatRoomData(data);
 				console.log(data);
 			});
-  };
-  
-  const handleSendMessage = () => {
-    const message = messageInputRef.current.value
-    const payload = {
-      message: message,
-      name: 'Ella'
-    }
-    fetch(messageURL, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-    .then(res => fetchChatRoomData())
-  }
+	};
+
+	const handleSendMessage = () => {
+    const message = messageInputRef.current.value;
+    const name = nameInputRef.current.value;
+		const payload = {
+			message: message,
+			name: name
+		};
+		fetch(messageURL, {
+			method: 'POST',
+			body: JSON.stringify(payload)
+		}).then(res => fetchChatRoomData());
+	};
 
 	useEffect(() => {
 		fetchChatRoomData();
@@ -42,9 +44,20 @@ function App() {
 				<div className='col-md-12'>
 					<div className='form-group'>
 						<label>Your message</label>
-						<input ref={messageInputRef} className='form-control' placeholder='hello..'></input>
+						<input
+							ref={messageInputRef}
+							className='form-control'
+							placeholder='hello..'
+						></input>
+            	<input
+							ref={nameInputRef}
+							className='form-control'
+							placeholder='name..'
+						></input>
 					</div>
-					<button onClick={handleSendMessage} className='btn btn-primary'>Send message</button>
+					<button onClick={handleSendMessage} className='btn btn-primary'>
+						Send message
+					</button>
 				</div>
 			</div>
 			<div>
@@ -56,14 +69,18 @@ function App() {
 					{console.log(chatRoomData)};
 				</div>
 
-				{chatRoomData && Object.entries(chatRoomData.messages).map((messageItem, index) => {
-						return (<div key={index} className='col-md-12'>
-							<div className='alert alert-info'>
-                {messageItem[1].message} - {messageItem[1].name}
-              </div>
-						</div>
-            )
-					})}
+				{chatRoomData &&
+					Object.entries(chatRoomData.messages)
+						.reverse()
+						.map((messageItem, index) => {
+							return (
+								<div key={index} className='col-md-12'>
+									<div className='alert alert-info'>
+										{messageItem[1].message} - {messageItem[1].name}
+									</div>
+								</div>
+							);
+						})}
 			</div>
 		</div>
 	);
